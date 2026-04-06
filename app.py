@@ -66,7 +66,7 @@ def chat():
         conn.commit()
         conn.close()
 
-        reply = "I will learn this soon 😊"
+        reply = "I don’t have that information right now. It has been recorded and will be updated soon 😊"
 
     return jsonify({"reply": reply})
 
