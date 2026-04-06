@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, jsonify, redirect, session
 import sqlite3
 import time
+import os
 
-app = Flask(__name__)
+# ✅ IMPORTANT for Render (static + templates)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = "admin123"
 
-# ✅ FIXED DB CONNECTION (WAL MODE)
+
+# ✅ DB CONNECTION (WAL MODE)
 def get_db():
     conn = sqlite3.connect("database.db", timeout=10)
     conn.execute("PRAGMA journal_mode=WAL")
@@ -111,13 +114,13 @@ def add():
     return redirect("/dashboard")
 
 
-# ✅ FINAL FIXED DELETE (WITH RETRY)
+# ✅ DELETE WITH RETRY (FIX LOCK)
 @app.route("/delete/<int:id>")
 def delete(id):
     if not session.get("admin"):
         return redirect("/admin")
 
-    for _ in range(3):  # retry 3 times
+    for _ in range(3):
         try:
             conn = get_db()
             c = conn.cursor()
@@ -139,6 +142,7 @@ def logout():
     return redirect("/")
 
 
-# ✅ DISABLE DOUBLE EXECUTION
+# ✅ RENDER PORT FIX
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
