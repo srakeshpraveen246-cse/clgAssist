@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <img src="/static/logo.jpg">
+        <h3>JACSICSE</h3>
+
+        <button onclick="window.location='/'">💬 Chat</button>
+        <button onclick="window.location='/logout'">🚪 Logout</button>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="chat-area admin-container">
+
+        <div class="chat-header-box">📊 Admin Dashboard</div>
+
+        <!-- STATS -->
+        <div class="cards">
+            <div class="card">FAQs: {{faq|length}}</div>
+            <div class="card">Unknown: {{unknown|length}}</div>
+        </div>
+
+        <!-- ADD FAQ -->
+        <div class="glass">
+            <h3>Add FAQ</h3>
+
+            <form method="POST" action="/add">
+                <input name="question" class="input-field"
+                       placeholder="Enter question...">
+
+                <textarea name="answer" class="textarea-field"
+                placeholder="Enter detailed answer (you can paste paragraphs here)..."></textarea>
+
+                <button id="button">➕ Add FAQ</button>
+            </form>
+        </div>
+
+        <!-- UNKNOWN QUESTIONS -->
+        <div class="glass">
+            <h3>Unknown Questions</h3>
+
+            {% for q in unknown %}
+            <div class="unknown">
+
+                <p class="question-text">{{q[1]}}</p>
+
+                <form method="POST" action="/add">
+                    <input type="hidden" name="question" value="{{q[1]}}">
+
+                    <textarea name="answer" class="textarea-field"
+                    placeholder="Write full answer..."></textarea>
+
+                    <div class="btn-row">
+                        <button class="btn">Add</button>
+
+                        <a href="/delete/{{q[0]}}">
+                            <button type="button" class="btn-danger">Delete</button>
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
